@@ -1,38 +1,31 @@
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.label {
-  font-weight: bold;
-}
-
-.field {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #dfe1e5;
+.input {
+  padding: 10px;
   font-size: 16px;
-  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
 }
 
 .button {
-  padding: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
   background-color: #007bff;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
 }
 
 .button:hover {
   background-color: #0056b3;
 }
 
-.errorMessage {
-  color: red;
-  font-size: 14px;
+.form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.header {
+  margin-bottom: 20px;
 }

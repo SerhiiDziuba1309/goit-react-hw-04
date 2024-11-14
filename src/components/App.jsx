@@ -1,12 +1,11 @@
-import Toaster from 'react-hot-toast';
-
+import toast, { Toaster } from 'react-hot-toast';
 import SearchBar from '../components/SearchBar/SearchBar';
 import ImageGallery from '../components/ImageGallery/ImageGallery';
 import LoadMoreBtn from '../components/LoadMoreBtn/LoadMoreBtn';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import ImageModal from '../components/ImageModal/ImageModal';
 import Loader from '../components/Loader/Loader';
-import './App.module.css';
+import s from './App.module.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -31,15 +30,19 @@ const App = () => {
         params: {
           query,
           page,
-          per_page: 12,
+          per_page: 20,
           client_id: ACCESS_KEY,
         },
       })
       .then(response => {
+        if (response.data.results.length === 0) {
+          toast.error('No results found. Try a different keyword');
+          return;
+        }
         setImages(prevImages => [...prevImages, ...response.data.results]);
       })
       .catch(() => {
-        setError('Failed to fetch images. Please try again later');
+        setError('Something went wrong.Please try again later');
       })
       .finally(() => {
         setLoading(false);
@@ -64,7 +67,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className={s.app}>
       <Toaster position="top-right" />
       <SearchBar onSubmit={handleSearch} />
       {error && <ErrorMessage message={error} />}

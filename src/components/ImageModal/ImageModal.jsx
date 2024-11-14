@@ -1,16 +1,27 @@
 import React from 'react';
 import Modal from 'react-modal';
+import s from './ImageModal.module.css';
 
 const ImageModal = ({ modalImage, onClose }) => {
   return (
-    <Modal isOpen={!!modalImage} onAfterClose={onClose}>
-      <div>
-        <img src={modalImage.urls.regular} alt={modalImage.alt_description} />
-        <p>Author: {modalImage.user.name}</p>
-        <p>Likes: {modalImage.likes}</p>
-      </div>
-      ;
-    </Modal>
+    <>
+      <div className={s.overlay} onClick={onClose}></div>
+      <Modal
+        isOpen={!!modalImage}
+        onRequestClose={onClose}
+        className={s.modal}
+        overlayClassName={s.overlay}
+        ariaHideApp={false}
+      >
+        <img
+          className={s.img}
+          src={modalImage.urls.regular}
+          alt={modalImage.alt_description}
+        />
+        <p className={s.text}>Author: {modalImage.user.name}</p>
+        <p className={s.text}>Likes: {modalImage.likes}</p>
+      </Modal>
+    </>
   );
 };
 
