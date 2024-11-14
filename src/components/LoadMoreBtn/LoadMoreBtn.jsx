@@ -1,15 +1,7 @@
 import React from 'react';
-import s from './Contact.module.css';
 
-function Contact({ id, name, number, deleteContact }) {
-  return (
-    <li className={s.contact}>
-      {name}: {number}
-      <button className={s.deleteButton} onClick={() => deleteContact(id)}>
-        Delete
-      </button>
-    </li>
-  );
-}
+const LoadMoreBtn = ({ onClick }) => {
+  return <button onClick={onClick}> Load more</button>;
+};
 
-export default Contact;
+export default LoadMoreBtn;

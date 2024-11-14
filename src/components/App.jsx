@@ -1,49 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import { nanoid } from 'nanoid';
-import ContactForm from '../components/ContactForm/ContactForm';
-import ContactList from '../components/ContactList/ContactList';
-import SearchBox from '../components/SearchBox/SearchBox';
-import s from './App.module.css';
+import Toaster from 'react-hot-toast';
+
+import SearchBar from '../components/SearchBar/SearchBar';
+import ImageGallery from '../components/ImageGallery/ImageGallery';
+import LoadMoreBtn from '../components/LoadMoreBtn/LoadMoreBtn';
+import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
+import ImageModal from '../components/ImageModal/ImageModal';
+import Loader from '../components/Loader/Loader';
+import './App.module.css';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const UNSPLASH_API_URL = 'https://api.unsplash.com/search/photos';
+const ACCESS_KEY = 'O4CmHlBkk719CuCc7klHPeRJhobiuP_mtC-K1hus2V0';
 
 const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState(``);
+  const [images, setImages] = useState([]);
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [modalImage, setModalImage] = useState(null);
 
   useEffect(() => {
-    const storedContacts = localStorage.getItem('contacts');
-    if (storedContacts) {
-      setContacts(JSON.parse(storedContacts));
-    }
-  }, []);
+    if (!query) return;
+    setLoading(true);
+    setError(null);
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+    axios
+      .get(UNSPLASH_API_URL, {
+        params: {
+          query,
+          page,
+          per_page: 12,
+          client_id: ACCESS_KEY,
+        },
+      })
+      .then(response => {
+        setImages(prevImages => [...prevImages, ...response.data.results]);
+      })
+      .catch(() => {
+        setError('Failed to fetch images. Please try again later');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [query, page]);
 
-  const addContact = (name, number) => {
-    const newContact = { id: nanoid(), name, number };
-    setContacts(prevContacts => [...prevContacts, newContact]);
+  const handleSearch = searchQuery => {
+    setQuery(searchQuery);
+    setImages([]);
+    setPage(1);
   };
 
-  const deleteContact = id => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== id)
-    );
+  const loadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  const handleFilterChange = event => {
-    setFilter(event.target.value);
+  const openModal = image => {
+    setModalImage(image);
+  };
+  const closeModal = () => {
+    setModalImage(null);
   };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
   return (
-    <div className={s.container}>
-      <h1 className={s.title}>Phonebook</h1>
-      <ContactForm addContact={addContact} />
-      <SearchBox value={filter} onChange={handleFilterChange} />
-      <ContactList contacts={filteredContacts} deleteContact={deleteContact} />
+    <div>
+      <Toaster position="top-right" />
+      <SearchBar onSubmit={handleSearch} />
+      {error && <ErrorMessage message={error} />}
+      <ImageGallery images={images} onImageClick={openModal} />
+      {loading && <Loader />}
+      {images.length > 0 && !loading && <LoadMoreBtn onClick={loadMore} />}
+      {modalImage && (
+        <ImageModal modalImage={modalImage} onClose={closeModal} />
+      )}
     </div>
   );
 };

@@ -1,17 +1,16 @@
 import React from 'react';
-import Contact from '../Contact/Contact';
-import s from './ContactList.module.css';
+import ImageCard from './ImageCard';
 
-function ContactList({ contacts, deleteContact }) {
+const ImageGallery = ({ images, onImageClick }) => {
   return (
-    <ul className={s.list}>
-      {contacts.map(contact => (
-        <li className={s.item} key={contact.id} className={s.item}>
-          <Contact {...contact} deleteContact={deleteContact} />
+    <ul>
+      {images.map(image => (
+        <li key={image.id} onClick={() => onImageClick(image)}>
+          <ImageCard image={image} />
         </li>
       ))}
     </ul>
   );
-}
+};
 
-export default ContactList;
+export default ImageGallery;

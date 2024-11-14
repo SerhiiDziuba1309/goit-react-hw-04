@@ -1,18 +1,12 @@
 import React from 'react';
-import s from './SearchBox.module.css';
+import { ThreeDots } from 'react-loader-spinner';
 
-const SearchBox = ({ value, onChange }) => {
+const Loader = () => {
   return (
-    <>
-      <span className={s.span}>Find contact by name</span>
-      <input
-        className={s.searchBox}
-        type="text"
-        value={value}
-        onChange={onChange}
-      />
-    </>
+    <div>
+      <ThreeDots type="ThreeDots" color="#00BFFF" height={80} width={80} />
+    </div>
   );
 };
 
-export default SearchBox;
+export default Loader;
